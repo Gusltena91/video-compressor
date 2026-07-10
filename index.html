@@ -828,14 +828,13 @@ async function initFFmpeg() {
         loadingText.textContent = 'Descargando FFmpeg WebAssembly (~30 MB, solo la primera vez)...';
 
         // Convert core resources to same-origin blob URLs to avoid CORS/COEP issues
+        // UMD single-threaded build only has core.js and core.wasm (no worker file)
         const baseURL = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/umd';
         const coreURL = await toBlobURL(baseURL + '/ffmpeg-core.js', 'text/javascript');
         loadingText.textContent = 'Descargando WebAssembly (~30 MB)...';
         const wasmURL = await toBlobURL(baseURL + '/ffmpeg-core.wasm', 'application/wasm');
-        loadingText.textContent = 'Casi listo...';
-        const workerURL = await toBlobURL(baseURL + '/ffmpeg-core.worker.js', 'text/javascript');
 
-        await ffmpeg.load({ coreURL, wasmURL, workerURL });
+        await ffmpeg.load({ coreURL, wasmURL });
 
         ffmpegLoaded = true;
     } catch (err) {
