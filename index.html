@@ -6,41 +6,47 @@
     <title>Video Compressor | Imagine Marketing Agency</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Service Worker para SharedArrayBuffer en GitHub Pages -->
+    <script src="https://unpkg.com/coi-serviceworker@0.1.7/coi-serviceworker.min.js"></script>
     <style>
         :root {
-            --primary: #1a6bff;
-            --primary-light: #4d8eff;
-            --primary-dark: #0050d4;
-            --primary-bg: #eef4ff;
-            --accent: #00c2ff;
+            --primary: #003752;
+            --primary-light: #009cde;
+            --primary-dark: #002a3f;
+            --primary-bg: #eef6fb;
+            --accent: #00f2ea;
             --bg: #f7f9fc;
             --bg-card: #ffffff;
-            --text: #1a1a2e;
+            --text: #003752;
             --text-dim: #6b7280;
             --text-mid: #4b5563;
             --border: #e5e7eb;
             --success: #10b981;
             --warning: #f59e0b;
             --error: #ef4444;
-            --shadow: 0 4px 24px rgba(0,0,0,0.06);
-            --shadow-lg: 0 8px 40px rgba(26,107,255,0.12);
+            --shadow: 0 4px 24px rgba(0,55,82,0.06);
+            --shadow-lg: 0 8px 40px rgba(0,55,82,0.12);
             --radius: 16px;
             --radius-sm: 10px;
+            --gradient: linear-gradient(135deg, var(--primary), var(--primary-light));
+            --gradient-accent: linear-gradient(135deg, var(--primary-light), var(--accent));
         }
 
         [data-theme="dark"] {
-            --primary: #4d8eff;
-            --primary-light: #7aadff;
-            --primary-dark: #1a6bff;
-            --primary-bg: #1a2340;
-            --bg: #0d1117;
-            --bg-card: #161b22;
+            --primary: #009cde;
+            --primary-light: #00f2ea;
+            --primary-dark: #007ab8;
+            --primary-bg: #0a1e2a;
+            --bg: #0b1520;
+            --bg-card: #0f1f2e;
             --text: #e6edf3;
             --text-dim: #8b949e;
             --text-mid: #b1bac4;
-            --border: #30363d;
+            --border: #1e3a4f;
             --shadow: 0 4px 24px rgba(0,0,0,0.3);
-            --shadow-lg: 0 8px 40px rgba(77,142,255,0.15);
+            --shadow-lg: 0 8px 40px rgba(0,156,222,0.15);
+            --gradient: linear-gradient(135deg, #009cde, #00f2ea);
+            --gradient-accent: linear-gradient(135deg, #00f2ea, #009cde);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -53,11 +59,10 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        /* Header */
         .header {
             background: var(--bg-card);
             border-bottom: 1px solid var(--border);
-            padding: 16px 0;
+            padding: 14px 0;
             transition: background 0.3s;
         }
 
@@ -74,31 +79,24 @@
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-
-        .brand-icon {
-            width: 36px;
-            height: 36px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 800;
-            font-size: 16px;
-        }
-
-        .brand-name {
-            font-weight: 700;
-            font-size: 15px;
+            text-decoration: none;
             color: var(--text);
         }
 
-        .brand-sub {
+        .brand-logo {
+            height: 40px;
+            width: auto;
+        }
+
+        .brand-text .brand-name {
+            font-weight: 700;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .brand-text .brand-sub {
             font-size: 11px;
             color: var(--text-dim);
-            font-weight: 400;
         }
 
         .theme-toggle {
@@ -115,7 +113,6 @@
 
         .theme-toggle:hover { border-color: var(--primary); color: var(--primary); }
 
-        /* Main */
         .main {
             max-width: 720px;
             margin: 40px auto;
@@ -130,7 +127,7 @@
         .hero h1 {
             font-size: 32px;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
+            background: var(--gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -157,7 +154,6 @@
 
         .badge svg { width: 14px; height: 14px; }
 
-        /* Card */
         .card {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -175,11 +171,10 @@
             text-align: center;
             cursor: pointer;
             transition: all 0.2s;
-            position: relative;
         }
 
         .drop-zone:hover, .drop-zone.dragover {
-            border-color: var(--primary);
+            border-color: var(--primary-light);
             background: var(--primary-bg);
         }
 
@@ -194,11 +189,7 @@
             margin: 0 auto 16px;
         }
 
-        .drop-zone-icon svg {
-            width: 28px;
-            height: 28px;
-            color: var(--primary);
-        }
+        .drop-zone-icon svg { width: 28px; height: 28px; color: var(--primary); }
 
         .drop-zone-text {
             font-size: 15px;
@@ -206,14 +197,9 @@
             margin-bottom: 6px;
         }
 
-        .drop-zone-text strong { color: var(--primary); }
+        .drop-zone-text strong { color: var(--primary-light); cursor: pointer; }
 
-        .drop-zone-hint {
-            font-size: 12px;
-            color: var(--text-dim);
-        }
-
-        .drop-zone input { display: none; }
+        .drop-zone-hint { font-size: 12px; color: var(--text-dim); }
 
         /* File Info */
         .file-info {
@@ -239,11 +225,7 @@
             text-overflow: ellipsis;
         }
 
-        .file-meta {
-            font-size: 12px;
-            color: var(--text-dim);
-            margin-top: 2px;
-        }
+        .file-meta { font-size: 12px; color: var(--text-dim); margin-top: 2px; }
 
         .file-remove {
             background: none;
@@ -259,7 +241,8 @@
         .file-remove:hover { background: var(--error); color: white; }
 
         /* Quality */
-        .section { margin-top: 24px; }
+        .section { margin-top: 24px; display: none; }
+        .section.visible { display: block; }
 
         .section-label {
             font-size: 13px;
@@ -289,23 +272,13 @@
         .quality-btn:hover { border-color: var(--primary-light); }
 
         .quality-btn.active {
-            border-color: var(--primary);
+            border-color: var(--primary-light);
             background: var(--primary-bg);
         }
 
-        .quality-btn .q-label {
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text);
-        }
-
-        .quality-btn .q-desc {
-            font-size: 11px;
-            color: var(--text-dim);
-            margin-top: 3px;
-        }
-
-        .quality-btn.active .q-label { color: var(--primary); }
+        .quality-btn .q-label { font-size: 14px; font-weight: 600; color: var(--text); }
+        .quality-btn .q-desc { font-size: 11px; color: var(--text-dim); margin-top: 3px; }
+        .quality-btn.active .q-label { color: var(--primary-light); }
 
         /* Estimate */
         .estimate {
@@ -315,19 +288,19 @@
             background: var(--bg);
             border-radius: 8px;
             font-size: 13px;
-            color: var(--primary);
+            color: var(--primary-light);
             font-weight: 500;
         }
 
         .estimate.visible { display: block; }
 
-        /* Compress Button */
+        /* Buttons */
         .btn-compress {
             display: none;
             width: 100%;
             padding: 16px;
             margin-top: 24px;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            background: var(--gradient);
             color: white;
             border: none;
             border-radius: var(--radius-sm);
@@ -336,34 +309,20 @@
             cursor: pointer;
             font-family: inherit;
             transition: all 0.2s;
-            box-shadow: 0 4px 16px rgba(26,107,255,0.3);
+            box-shadow: 0 4px 16px rgba(0,55,82,0.25);
         }
 
         .btn-compress.visible { display: block; }
-        .btn-compress:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(26,107,255,0.4); }
-        .btn-compress:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
+        .btn-compress:hover { transform: translateY(-1px); box-shadow: 0 6px 24px rgba(0,55,82,0.35); }
+        .btn-compress:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
 
         /* Progress */
-        .progress-section {
-            display: none;
-            margin-top: 24px;
-        }
-
+        .progress-section { display: none; margin-top: 24px; }
         .progress-section.visible { display: block; }
 
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 10px; }
         .progress-status { font-size: 14px; font-weight: 500; color: var(--text-mid); }
-        .progress-pct { font-size: 14px; font-weight: 700; color: var(--primary); }
+        .progress-pct { font-size: 14px; font-weight: 700; color: var(--primary-light); }
 
         .progress-track {
             height: 10px;
@@ -374,17 +333,13 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--primary), var(--accent));
+            background: var(--gradient-accent);
             border-radius: 5px;
             width: 0%;
             transition: width 0.4s ease;
         }
 
-        .progress-note {
-            font-size: 12px;
-            color: var(--text-dim);
-            margin-top: 8px;
-        }
+        .progress-note { font-size: 12px; color: var(--text-dim); margin-top: 8px; }
 
         /* Cancel */
         .btn-cancel {
@@ -407,11 +362,7 @@
         .btn-cancel:hover { background: var(--error); color: white; }
 
         /* Results */
-        .results {
-            display: none;
-            margin-top: 24px;
-        }
-
+        .results { display: none; margin-top: 24px; }
         .results.visible { display: block; }
 
         .results-banner {
@@ -423,16 +374,8 @@
             margin-bottom: 16px;
         }
 
-        .results-banner.warning {
-            background: linear-gradient(135deg, var(--warning), #d97706);
-        }
-
-        .results-banner h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 4px;
-        }
-
+        .results-banner.warning { background: linear-gradient(135deg, var(--warning), #d97706); }
+        .results-banner h3 { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
         .results-banner p { font-size: 13px; opacity: 0.9; }
 
         .results-stats {
@@ -449,12 +392,7 @@
             border-radius: var(--radius-sm);
         }
 
-        .stat-value {
-            font-size: 22px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
+        .stat-value { font-size: 22px; font-weight: 800; color: var(--primary-light); }
         .stat-label {
             font-size: 11px;
             color: var(--text-dim);
@@ -496,6 +434,26 @@
 
         .btn-new:hover { border-color: var(--primary); color: var(--primary); }
 
+        /* Error message */
+        .error-box {
+            display: none;
+            margin-top: 16px;
+            padding: 16px;
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: var(--radius-sm);
+            color: #b91c1c;
+            font-size: 13px;
+        }
+
+        [data-theme="dark"] .error-box {
+            background: #2a1515;
+            border-color: #441111;
+            color: #fca5a5;
+        }
+
+        .error-box.visible { display: block; }
+
         /* Loading overlay */
         .loading-overlay {
             display: none;
@@ -521,17 +479,15 @@
             width: 40px;
             height: 40px;
             border: 4px solid var(--border);
-            border-top-color: var(--primary);
+            border-top-color: var(--primary-light);
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
             margin: 0 auto 16px;
         }
 
         @keyframes spin { to { transform: rotate(360deg); } }
-
         .loading-box p { color: var(--text-mid); font-size: 14px; }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 32px 24px;
@@ -539,9 +495,9 @@
             color: var(--text-dim);
         }
 
-        .footer a { color: var(--primary); text-decoration: none; }
+        .footer a { color: var(--primary-light); text-decoration: none; font-weight: 600; }
+        .footer a:hover { text-decoration: underline; }
 
-        /* Responsive */
         @media (max-width: 600px) {
             .hero h1 { font-size: 24px; }
             .card { padding: 20px; }
@@ -555,13 +511,13 @@
 
 <div class="header">
     <div class="header-inner">
-        <div class="brand">
-            <div class="brand-icon">IM</div>
-            <div>
+        <a href="https://www.imagineagencia.com/" target="_blank" class="brand">
+            <img src="imaginelogo.png" alt="Imagine" class="brand-logo">
+            <div class="brand-text">
                 <div class="brand-name">Imagine Marketing Agency</div>
                 <div class="brand-sub">Video Tools</div>
             </div>
-        </div>
+        </a>
         <button class="theme-toggle" id="themeToggle">Modo Oscuro</button>
     </div>
 </div>
@@ -594,7 +550,7 @@
             <button class="file-remove" id="fileRemove">&times;</button>
         </div>
 
-        <div class="section" id="qualitySection" style="display:none">
+        <div class="section" id="qualitySection">
             <div class="section-label">Calidad de salida</div>
             <div class="quality-grid">
                 <div class="quality-btn" data-crf="18" data-preset="fast">
@@ -617,7 +573,6 @@
         </div>
 
         <div class="estimate" id="estimate"></div>
-
         <button class="btn-compress" id="btnCompress">Comprimir video</button>
 
         <div class="progress-section" id="progressSection">
@@ -628,17 +583,19 @@
             <div class="progress-track">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            <div class="progress-note" id="progressNote">Tu video se procesa localmente en tu navegador.</div>
+            <div class="progress-note">Tu video se procesa localmente en tu navegador.</div>
         </div>
 
         <button class="btn-cancel" id="btnCancel">Cancelar</button>
+
+        <div class="error-box" id="errorBox"></div>
 
         <div class="results" id="results">
             <div class="results-banner" id="resultsBanner">
                 <h3 id="resultsTitle"></h3>
                 <p id="resultsSubtitle"></p>
             </div>
-            <div class="results-stats" id="resultsStats">
+            <div class="results-stats">
                 <div class="stat">
                     <div class="stat-value" id="statOriginal">-</div>
                     <div class="stat-label">Original</div>
@@ -659,52 +616,48 @@
 </div>
 
 <div class="footer">
-    Hecho con FFmpeg.wasm - procesamiento 100% local<br>
-    <a href="#">Imagine Marketing Agency</a>
+    Powered by FFmpeg.wasm - procesamiento 100% local<br>
+    <a href="https://www.imagineagencia.com/" target="_blank">Imagine Marketing Agency</a>
 </div>
 
-<!-- Loading overlay for FFmpeg init -->
 <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-box">
         <div class="spinner"></div>
-        <p>Cargando motor de compresion...</p>
+        <p id="loadingText">Cargando motor de compresion...</p>
     </div>
 </div>
 
-<!-- FFmpeg.wasm -->
-<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
-<script src="https://unpkg.com/@ffmpeg/util@0.12.1/dist/umd/util.js"></script>
-
 <script>
-const { FFmpeg } = FFmpegWASM;
-const { fetchFile } = FFmpegUtil;
+// ==========================================
+// Video Compressor - Imagine Marketing Agency
+// FFmpeg.wasm client-side processing
+// ==========================================
 
 let ffmpeg = null;
+let ffmpegLoaded = false;
 let selectedFile = null;
 let selectedQuality = { crf: '23', preset: 'fast' };
 let outputData = null;
 let outputName = '';
 
-// DOM
-const dropZone = document.getElementById('dropZone');
-const fileInput = document.getElementById('fileInput');
-const fileInfo = document.getElementById('fileInfo');
-const fileName = document.getElementById('fileName');
-const fileMeta = document.getElementById('fileMeta');
-const fileRemove = document.getElementById('fileRemove');
-const qualitySection = document.getElementById('qualitySection');
-const estimate = document.getElementById('estimate');
-const btnCompress = document.getElementById('btnCompress');
-const progressSection = document.getElementById('progressSection');
-const progressStatus = document.getElementById('progressStatus');
-const progressPct = document.getElementById('progressPct');
-const progressFill = document.getElementById('progressFill');
-const progressNote = document.getElementById('progressNote');
-const btnCancel = document.getElementById('btnCancel');
-const results = document.getElementById('results');
-const loadingOverlay = document.getElementById('loadingOverlay');
+// DOM refs
+const $ = id => document.getElementById(id);
+const dropZone = $('dropZone');
+const fileInput = $('fileInput');
+const fileInfo = $('fileInfo');
+const qualitySection = $('qualitySection');
+const estimateEl = $('estimate');
+const btnCompress = $('btnCompress');
+const progressSection = $('progressSection');
+const progressStatus = $('progressStatus');
+const progressPct = $('progressPct');
+const progressFill = $('progressFill');
+const btnCancel = $('btnCancel');
+const results = $('results');
+const errorBox = $('errorBox');
+const loadingOverlay = $('loadingOverlay');
+const loadingText = $('loadingText');
 
-// Format size
 function formatSize(bytes) {
     if (bytes >= 1073741824) return (bytes / 1073741824).toFixed(1) + ' GB';
     if (bytes >= 1048576) return (bytes / 1048576).toFixed(1) + ' MB';
@@ -712,54 +665,77 @@ function formatSize(bytes) {
     return bytes + ' B';
 }
 
-// Init FFmpeg (lazy - on first compress)
-async function initFFmpeg() {
-    if (ffmpeg) return;
-    loadingOverlay.classList.add('visible');
-    ffmpeg = new FFmpeg();
-
-    ffmpeg.on('progress', ({ progress, time }) => {
-        const pct = Math.min(99, Math.round(progress * 100));
-        if (pct > 0) {
-            progressFill.style.width = pct + '%';
-            progressPct.textContent = pct + '%';
-            progressStatus.textContent = 'Comprimiendo...';
-        }
-    });
-
-    await ffmpeg.load({
-        coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js',
-        wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.wasm',
-    });
-
-    loadingOverlay.classList.remove('visible');
+function getExt(name) {
+    const m = name.match(/\.[^.]+$/);
+    return m ? m[0] : '.mp4';
 }
 
-// Theme
-const themeToggle = document.getElementById('themeToggle');
-themeToggle.addEventListener('click', () => {
+function showError(msg) {
+    errorBox.textContent = msg;
+    errorBox.classList.add('visible');
+}
+
+function hideError() {
+    errorBox.classList.remove('visible');
+}
+
+// ---- Theme ----
+$('themeToggle').addEventListener('click', () => {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     document.documentElement.setAttribute('data-theme', isDark ? '' : 'dark');
-    themeToggle.textContent = isDark ? 'Modo Oscuro' : 'Modo Claro';
+    $('themeToggle').textContent = isDark ? 'Modo Oscuro' : 'Modo Claro';
 });
 
-// Drop zone
-dropZone.addEventListener('click', () => fileInput.click());
-dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('dragover'); });
-dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
-dropZone.addEventListener('drop', e => {
+// ---- File Selection (works BEFORE FFmpeg loads) ----
+dropZone.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    fileInput.click();
+});
+
+fileInput.addEventListener('click', (e) => {
+    e.stopPropagation();
+});
+
+fileInput.addEventListener('change', () => {
+    if (fileInput.files && fileInput.files.length > 0) {
+        selectFile(fileInput.files[0]);
+    }
+});
+
+dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropZone.classList.add('dragover');
+});
+
+dropZone.addEventListener('dragleave', (e) => {
     e.preventDefault();
     dropZone.classList.remove('dragover');
-    if (e.dataTransfer.files.length) selectFile(e.dataTransfer.files[0]);
 });
-fileInput.addEventListener('change', () => { if (fileInput.files.length) selectFile(fileInput.files[0]); });
+
+dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+        selectFile(e.dataTransfer.files[0]);
+    }
+});
 
 function selectFile(file) {
+    const validExts = ['.mp4','.avi','.mov','.mkv','.webm','.flv','.wmv','.m4v','.ts'];
+    const ext = getExt(file.name).toLowerCase();
+    if (!validExts.includes(ext)) {
+        showError('Formato no soportado: ' + ext);
+        return;
+    }
+    hideError();
     selectedFile = file;
-    fileName.textContent = file.name;
-    fileMeta.textContent = formatSize(file.size);
+    $('fileName').textContent = file.name;
+    $('fileMeta').textContent = formatSize(file.size);
     fileInfo.classList.add('visible');
-    qualitySection.style.display = 'block';
+    qualitySection.classList.add('visible');
     btnCompress.classList.add('visible');
     results.classList.remove('visible');
     progressSection.classList.remove('visible');
@@ -767,9 +743,12 @@ function selectFile(file) {
     updateEstimate();
 }
 
-fileRemove.addEventListener('click', resetUI);
+$('fileRemove').addEventListener('click', (e) => {
+    e.stopPropagation();
+    resetUI();
+});
 
-// Quality
+// ---- Quality ----
 document.querySelectorAll('.quality-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         document.querySelectorAll('.quality-btn').forEach(b => b.classList.remove('active'));
@@ -785,20 +764,68 @@ function updateEstimate() {
     const ratio = ratios[selectedQuality.crf] || 0.45;
     const est = Math.round(selectedFile.size * ratio);
     const red = Math.round((1 - ratio) * 100);
-    estimate.textContent = `Estimado: ${formatSize(selectedFile.size)} → ~${formatSize(est)} (~${red}% menos)`;
-    estimate.classList.add('visible');
+    estimateEl.textContent = 'Estimado: ' + formatSize(selectedFile.size) + ' → ~' + formatSize(est) + ' (~' + red + '% menos)';
+    estimateEl.classList.add('visible');
 }
 
-// Compress
+// ---- FFmpeg Init (lazy) ----
+async function initFFmpeg() {
+    if (ffmpegLoaded) return;
+
+    loadingOverlay.classList.add('visible');
+    loadingText.textContent = 'Cargando motor de compresion...';
+
+    try {
+        // Dynamic import
+        const FFmpegModule = await import('https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js');
+        const UtilModule = await import('https://unpkg.com/@ffmpeg/util@0.12.1/dist/esm/index.js');
+
+        window._fetchFile = UtilModule.fetchFile;
+
+        ffmpeg = new FFmpegModule.FFmpeg();
+
+        ffmpeg.on('progress', ({ progress }) => {
+            const pct = Math.min(99, Math.round(progress * 100));
+            if (pct >= 0) {
+                progressFill.style.width = pct + '%';
+                progressPct.textContent = pct + '%';
+                progressStatus.textContent = 'Comprimiendo...';
+            }
+        });
+
+        ffmpeg.on('log', ({ message }) => {
+            console.log('[ffmpeg]', message);
+        });
+
+        loadingText.textContent = 'Descargando FFmpeg WebAssembly (~30 MB, solo la primera vez)...';
+
+        await ffmpeg.load({
+            coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.js',
+            wasmURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.wasm',
+            workerURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm/ffmpeg-core.worker.js',
+        });
+
+        ffmpegLoaded = true;
+    } catch (err) {
+        console.error('FFmpeg init error:', err);
+        throw new Error('No se pudo cargar FFmpeg. Verifica tu conexion a internet. Detalle: ' + err.message);
+    } finally {
+        loadingOverlay.classList.remove('visible');
+    }
+}
+
+// ---- Compress ----
 btnCompress.addEventListener('click', async () => {
     if (!selectedFile) return;
 
+    hideError();
+    const origSize = selectedFile.size;
     btnCompress.disabled = true;
     btnCompress.textContent = 'Iniciando...';
     progressSection.classList.add('visible');
     btnCancel.classList.add('visible');
     results.classList.remove('visible');
-    estimate.classList.remove('visible');
+    estimateEl.classList.remove('visible');
     progressFill.style.width = '0%';
     progressPct.textContent = '0%';
     progressStatus.textContent = 'Cargando motor...';
@@ -807,14 +834,16 @@ btnCompress.addEventListener('click', async () => {
         await initFFmpeg();
 
         progressStatus.textContent = 'Preparando archivo...';
-        const inputName = 'input' + getExtension(selectedFile.name);
-        const ext = getExtension(selectedFile.name) || '.mp4';
+        btnCompress.textContent = 'Comprimiendo...';
+
+        const ext = getExt(selectedFile.name);
+        const inputName = 'input' + ext;
         outputName = selectedFile.name.replace(/\.[^.]+$/, '') + '_comprimido' + ext;
 
-        await ffmpeg.writeFile(inputName, await fetchFile(selectedFile));
+        const fileData = await window._fetchFile(selectedFile);
+        await ffmpeg.writeFile(inputName, fileData);
 
         progressStatus.textContent = 'Comprimiendo...';
-        btnCompress.textContent = 'Comprimiendo...';
 
         await ffmpeg.exec([
             '-i', inputName,
@@ -829,100 +858,98 @@ btnCompress.addEventListener('click', async () => {
 
         outputData = await ffmpeg.readFile('output' + ext);
 
-        // Cleanup
-        await ffmpeg.deleteFile(inputName);
-        await ffmpeg.deleteFile('output' + ext);
+        try {
+            await ffmpeg.deleteFile(inputName);
+            await ffmpeg.deleteFile('output' + ext);
+        } catch(e) {}
 
-        // Results
         const compressedSize = outputData.length;
-        const originalSize = selectedFile.size;
-        const reduction = ((1 - compressedSize / originalSize) * 100).toFixed(1);
 
         progressSection.classList.remove('visible');
         btnCancel.classList.remove('visible');
 
-        document.getElementById('statOriginal').textContent = formatSize(originalSize);
-        document.getElementById('statCompressed').textContent = formatSize(compressedSize);
+        $('statOriginal').textContent = formatSize(origSize);
+        $('statCompressed').textContent = formatSize(compressedSize);
 
-        const banner = document.getElementById('resultsBanner');
-        const rTitle = document.getElementById('resultsTitle');
-        const rSub = document.getElementById('resultsSubtitle');
+        const banner = $('resultsBanner');
 
-        if (compressedSize < originalSize) {
-            document.getElementById('statReduction').textContent = reduction + '%';
+        if (compressedSize < origSize) {
+            const red = ((1 - compressedSize / origSize) * 100).toFixed(1);
+            $('statReduction').textContent = red + '%';
             banner.className = 'results-banner';
-            rTitle.textContent = 'Compresion exitosa';
-            rSub.textContent = `Tu video se redujo un ${reduction}%`;
+            $('resultsTitle').textContent = 'Compresion exitosa';
+            $('resultsSubtitle').textContent = 'Tu video se redujo un ' + red + '%';
         } else {
-            document.getElementById('statReduction').textContent = '0%';
+            $('statReduction').textContent = '0%';
             banner.className = 'results-banner warning';
-            rTitle.textContent = 'Video ya optimizado';
-            rSub.textContent = 'El video ya estaba comprimido. Prueba con calidad mas baja.';
+            $('resultsTitle').textContent = 'Video ya optimizado';
+            $('resultsSubtitle').textContent = 'El video ya estaba comprimido. Prueba con calidad mas baja.';
         }
 
         results.classList.add('visible');
 
     } catch (err) {
-        if (err.message && err.message.includes('abort')) {
-            progressStatus.textContent = 'Cancelado';
+        progressSection.classList.remove('visible');
+        btnCancel.classList.remove('visible');
+
+        if (err.message && (err.message.includes('abort') || err.message.includes('terminated'))) {
+            // User cancelled
         } else {
-            progressStatus.textContent = 'Error: ' + (err.message || 'desconocido');
+            showError('Error: ' + (err.message || 'Error desconocido durante la compresion'));
             console.error(err);
         }
-        progressFill.style.width = '0%';
-        btnCancel.classList.remove('visible');
     }
 
     btnCompress.disabled = false;
     btnCompress.textContent = 'Comprimir video';
 });
 
-// Cancel
+// ---- Cancel ----
 btnCancel.addEventListener('click', () => {
     if (ffmpeg) {
-        try { ffmpeg.terminate(); ffmpeg = null; } catch {}
+        try { ffmpeg.terminate(); } catch {}
+        ffmpeg = null;
+        ffmpegLoaded = false;
     }
     progressSection.classList.remove('visible');
     btnCancel.classList.remove('visible');
-    progressStatus.textContent = 'Cancelado';
     btnCompress.disabled = false;
     btnCompress.textContent = 'Comprimir video';
 });
 
-// Download
-document.getElementById('btnDownload').addEventListener('click', () => {
+// ---- Download ----
+$('btnDownload').addEventListener('click', () => {
     if (!outputData) return;
     const blob = new Blob([outputData.buffer], { type: 'video/mp4' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
     a.download = outputName;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
 });
 
-// New
-document.getElementById('btnNew').addEventListener('click', resetUI);
+// ---- New ----
+$('btnNew').addEventListener('click', resetUI);
 
 function resetUI() {
     selectedFile = null;
     outputData = null;
     fileInput.value = '';
     fileInfo.classList.remove('visible');
-    qualitySection.style.display = 'none';
+    qualitySection.classList.remove('visible');
     btnCompress.classList.remove('visible');
     btnCompress.disabled = false;
     btnCompress.textContent = 'Comprimir video';
     progressSection.classList.remove('visible');
     btnCancel.classList.remove('visible');
     results.classList.remove('visible');
-    estimate.classList.remove('visible');
+    estimateEl.classList.remove('visible');
+    hideError();
 }
 
-function getExtension(name) {
-    const m = name.match(/\.[^.]+$/);
-    return m ? m[0] : '.mp4';
-}
 </script>
 
 </body>
